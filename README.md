@@ -1,153 +1,92 @@
 <div align="center">
-  <img src="CabinTranslator_Logo.png" alt="Cabin Translator Logo" width="100%" />
+  <img src="CabinTranslator_banner.png" alt="Cabin Translator Banner" width="100%" />
   <h1>Cabin Translator</h1>
   <p>Ứng dụng dịch nói thành văn bản và dịch thời gian thực trên desktop.</p>
 </div>
+# TÀI LIỆU THIẾT KẾ HỆ THỐNG: CABIN TRANSLATOR
 
-Tài liệu thiết kế hệ thống
+## 1. TỔNG QUAN DỰ ÁN (INTRODUCTION)
+Cabin Translator là một ứng dụng máy tính hỗ trợ dịch giọng nói theo thời gian thực (real-time speech translation) được phát triển dựa trên nền tảng Tauri [1]. Ứng dụng này có khả năng thu âm thanh trực tiếp từ hệ thống hoặc micro, chuyển đổi giọng nói thành văn bản, và hiển thị bản dịch trên một giao diện tối giản [1].
 
-1. Mục tiêu và phạm vi
-- Ứng dụng desktop chạy trên Tauri 2.0.
-- Thu âm hệ thống và micro, chuyển thành văn bản, dịch theo thời gian thực.
-- Hiển thị văn bản gốc và bản dịch trong giao diện trong suốt.
-- Hỗ trợ đọc bản dịch bằng nhiều nhà cung cấp TTS.
+Điểm nổi bật của kiến trúc hệ thống là tính phi tập trung: ứng dụng không sử dụng bất kỳ máy chủ trung gian (server) nào của nhà phát triển, thay vào đó kết nối trực tiếp với các dịch vụ API thông qua khóa cá nhân của người dùng, hoặc chạy hoàn toàn ngoại tuyến [1, 2].
 
-2. Yêu cầu chức năng
-- Thu âm hệ thống, micro hoặc cả hai.
-- Kết nối Soniox WebSocket để STT và dịch theo thời gian thực.
-- Hỗ trợ chế độ dịch một chiều và hai chiều.
-- Hỗ trợ context cho Soniox (general, terms, text, translation_terms).
-- Hỗ trợ TTS: Edge TTS (proxy qua Rust), ElevenLabs, Google TTS.
-- Lưu settings và transcript theo phiên.
-- Chế độ local pipeline với Python sidecar (tùy chọn).
+## 2. SƠ ĐỒ KIẾN TRÚC HỆ THỐNG (ARCHITECTURE DIAGRAM)
+Hệ thống được thiết kế theo mô hình Client-Side hoàn toàn, kết hợp giữa Frontend (Giao diện web) và Backend (Rust) chạy trực tiếp trên máy tính người dùng [2].
 
-3. Yêu cầu phi chức năng
-- Độ trễ thấp, xử lý liên tục.
-- Ổn định kết nối (reconnect và reset session).
-- Giao diện nhẹ, luôn trên cùng, có chế độ compact.
-- Lưu trữ an toàn trong thư mục cấu hình và dữ liệu ứng dụng.
++-----------------------------------------------------------------+
+|                  GIAO DIỆN NGƯỜI DÙNG (FRONTEND)                |
+|               (JavaScript, HTML, CSS, WebView)                  |
+| - Hiển thị bản dịch (Chế độ Single/Dual, Smart Scroll)          |
+| - Điều khiển kích thước chữ, hiển thị thuật ngữ chuyên ngành    |
++-----------------------------------------------------------------+
+                                |
+                   (Giao tiếp qua Tauri IPC)
+                                |
++-----------------------------------------------------------------+
+|                    CORE BACKEND (RUST - TAURI 2)                |
++-----------------------------------------------------------------+
+        |                       |                       |
++---------------+       +---------------+       +---------------+
+| MODULE AUDIO  |       | MODULE DỊCH   |       | MODULE TTS    |
+| (Thu âm thanh)|       | (Xử lý ngôn   |       | (Phát giọng   |
+|               |       |  ngữ)         |       |  nói)         |
++---------------+       +---------------+       +---------------+
+| - ScreenCap-  |       | ONLINE:       |       | - Edge TTS    |
+|   tureKit     |       | - API Soniox  |       | - Google      |
+|   (macOS)     |       |               |       |   Chirp 3 HD  |
+| - WASAPI      |       | OFFLINE:      |       | - ElevenLabs  |
+|   (Windows)   |       | - MLX, Whisper|       |               |
+| - cpal (Mic)  |       |   Gemma (Mac) |       |               |
++---------------+       +---------------+       +---------------+
+                                |
++-----------------------------------------------------------------+
+|                       LƯU TRỮ CỤC BỘ (LOCAL)                    |
+| - Tệp tin văn bản lưu lịch sử hội thoại (.md)                   |
+| - Khóa API và cấu hình người dùng                               |
++-----------------------------------------------------------------+
 
-4. Kiến trúc tổng thể
-Frontend chạy trong WebView, backend Rust xử lý thu âm, settings, lưu transcript và proxy Edge TTS.
+## 3. CÁC CA SỬ DỤNG (USE CASES)
 
-Sơ đồ kiến trúc hệ thống
-```mermaid
-flowchart LR
-  A[Audio nguồn: System hoặc Microphone] --> B[Rust Audio Capture]
-  B --> C[PCM s16le 16kHz mono]
-  C --> D[Frontend JS - Soniox WebSocket]
-  D --> E[Soniox STT và Dịch]
-  E --> F[UI Transcript]
-  F --> G[TTS Provider]
-  G --> H[AudioPlayer]
+### Use Case 1: Dịch hội thoại một chiều (One-way Translation)
+- Tác nhân: Người dùng cá nhân.
+- Mô tả: Người dùng nói hoặc nghe một ngôn ngữ (hỗ trợ hơn 70 ngôn ngữ gốc) và hệ thống dịch sang một ngôn ngữ đích [1, 3].
+- Quy trình: Hệ thống thu âm từ nguồn đã chọn, gửi đến API xử lý, và hiển thị văn bản dịch lên màn hình với độ trễ từ 2-3 giây [1].
 
-  subgraph Backend Tauri (Rust)
-    B
-    I[Settings API]
-    J[Transcript API]
-    K[Edge TTS Proxy]
-    L[Local Pipeline Manager]
-  end
+### Use Case 2: Dịch hội thoại hai chiều (Two-way Translation) cho họp trực tuyến
+- Tác nhân: Người dùng tham gia video call (Zoom, Google Meet, MS Teams).
+- Mô tả: Hệ thống tự động phát hiện người đang nói thuộc ngôn ngữ nào trong hai ngôn ngữ được thiết lập (ví dụ: tiếng Việt và tiếng Nhật) và tự động dịch chéo qua lại [3].
+- Quy trình: Thu âm thanh từ cả Hệ thống và Micro. Tính năng đọc văn bản (TTS) tự động bị vô hiệu hóa để tránh hiện tượng dội âm thanh (feedback loop) [3].
 
-  subgraph Frontend (WebView)
-    D
-    F
-    G
-    H
-  end
+### Use Case 3: Đọc bản dịch (TTS Narration)
+- Tác nhân: Người dùng cần nghe phát âm bản dịch.
+- Mô tả: Hệ thống đọc to văn bản đã dịch trong chế độ một chiều [4].
+- Quy trình: Người dùng chọn 1 trong 3 nhà cung cấp TTS (Edge, Google, hoặc ElevenLabs), có thể điều chỉnh tốc độ đọc (với Edge và Google) [4].
 
-  I --> F
-  J --> F
-  K --> G
-  L --> D
-```
+### Use Case 4: Áp dụng thuật ngữ tùy chỉnh (Custom Translation Terms)
+- Tác nhân: Chuyên gia trong lĩnh vực đặc thù (y tế, tôn giáo, kỹ thuật).
+- Mô tả: Định nghĩa sẵn cách hệ thống dịch một số từ vựng chuyên ngành cụ thể [4].
+- Quy trình: Người dùng thêm thuật ngữ trong phần Cài đặt, hệ thống sẽ tự động đối chiếu và áp dụng trong quá trình dịch thời gian thực [4].
 
-5. Luồng dữ liệu chính
-5.1. Audio capture
-- Nguồn âm thanh: system, microphone, hoặc cả hai.
-- Rust thu âm, resample về PCM s16le 16kHz mono.
-- Dữ liệu được gửi sang frontend qua Tauri IPC channel.
+### Use Case 5: Dịch thuật ngoại tuyến (Local Mode)
+- Tác nhân: Người dùng sử dụng máy Mac sử dụng chip Apple Silicon không có kết nối mạng.
+- Mô tả: Dịch các ngôn ngữ Nhật, Anh, Trung, Hàn sang Việt, Anh ngay trên thiết bị [2].
+- Quy trình: Kích hoạt Local Mode, hệ thống sử dụng sức mạnh tính toán cục bộ (MLX, Whisper, Gemma) mà không cần gọi API bên ngoài [2].
 
-5.2. STT và dịch
-- Frontend mở kết nối WebSocket tới Soniox.
-- Gửi audio liên tục và nhận token, văn bản gốc, bản dịch.
-- Hỗ trợ gợi ý ngôn ngữ, chế độ one-way và two-way.
-- Có cơ chế reconnect và reset session để duy trì kết nối dài.
+## 4. NGĂN XẾP CÔNG NGHỆ (TECH STACK)
+Dự án được cấu thành từ các ngôn ngữ lập trình chính bao gồm JavaScript (46.7%), Rust (19.8%), CSS (12.8%), HTML (12.8%) và Python (7.9%) [5]. Chi tiết các thành phần:
 
-5.3. TTS
-- Edge TTS: frontend gọi command edge_tts_speak trong Rust; Rust proxy WebSocket, trả về base64 MP3.
-- ElevenLabs và Google TTS: frontend gọi API và phát lại bằng AudioPlayer.
-- AudioPlayer quản lý hàng đợi để phát mượt.
+- Nền tảng lõi: Tauri 2 (Frontend dùng WebView, Backend dùng Rust) [2].
+- Xử lý âm thanh đầu vào:
+  - ScreenCaptureKit: Thu âm thanh hệ thống trên macOS [2].
+  - WASAPI: Thu âm thanh hệ thống trên Windows [2].
+  - cpal: API thu âm Micro đa nền tảng [2].
+- Xử lý nhận dạng và dịch thuật (STT & Translation): 
+  - Đám mây: API Soniox [2].
+  - Cục bộ: Mô hình MLX, Whisper, Gemma [2].
+- Chuyển văn bản thành giọng nói (TTS): Edge TTS, Google Cloud TTS, ElevenLabs [2].
 
-5.4. Local pipeline (tùy chọn)
-- Rust chạy Python sidecar (scripts/local_pipeline.py) khi chọn chế độ local.
-- Audio được gửi sang pipeline và nhận kết quả qua IPC channel.
-- Script setup MLX (scripts/setup_mlx.py) để cài môi trường.
-
-6. Use case
-6.1. Dịch thời gian thực từ âm thanh hệ thống
-- Người dùng chọn nguồn system và nhấn Start.
-- Ứng dụng thu âm, gửi tới Soniox, hiển thị văn bản gốc và bản dịch.
-
-6.2. Dịch thời gian thực từ micro
-- Người dùng chọn nguồn microphone và nhấn Start.
-- Ứng dụng thu âm micro, gửi tới Soniox, hiển thị văn bản gốc và bản dịch.
-
-6.3. Dịch song song hệ thống và micro
-- Người dùng chọn nguồn both.
-- Ứng dụng trộn dữ liệu thu âm, gửi tới Soniox, hiển thị kết quả theo luồng.
-
-6.4. Dịch hai chiều
-- Người dùng chọn chế độ two-way, cấu hình Language A và Language B.
-- Soniox trả về văn bản gốc và bản dịch theo hướng phù hợp.
-
-6.5. Đọc bản dịch bằng TTS
-- Người dùng bật TTS và chọn nhà cung cấp.
-- Ứng dụng phát âm thanh bản dịch theo thời gian thực.
-
-6.6. Chạy local pipeline
-- Người dùng chọn chế độ local và khởi động pipeline.
-- Python sidecar xử lý và trả kết quả về giao diện.
-
-7. Thành phần hệ thống theo source code
-7.1. Frontend
-- src/js/app.js: App controller, điều phối settings, UI, audio, STT, TTS.
-- src/js/ui.js: hiển thị transcript và trạng thái.
-- src/js/soniox.js: Soniox WebSocket client, quản lý session, keepalive.
-- src/js/edge-tts.js: TTS Edge thông qua Rust.
-- src/js/elevenlabs-tts.js, src/js/google-tts.js: TTS cloud.
-- src/js/audio-player.js: phát audio dạng hàng đợi.
-- src/js/settings.js: quản lý settings qua Tauri IPC.
-
-7.2. Backend Tauri
-- src-tauri/src/lib.rs: khởi tạo Tauri, đăng ký commands và state.
-- src-tauri/src/commands/audio.rs: bật tắt thu âm, gom nhiều nguồn.
-- src-tauri/src/audio/system_audio.rs: thu âm hệ thống (macOS).
-- src-tauri/src/audio/microphone.rs: thu âm micro (cpal), resample.
-- src-tauri/src/commands/edge_tts.rs: proxy Edge TTS.
-- src-tauri/src/commands/local_pipeline.rs: quản lý Python sidecar.
-- src-tauri/src/commands/transcript.rs: lưu và mở thư mục transcript.
-- src-tauri/src/commands/settings.rs: đọc ghi settings.
-
-8. Lưu trữ và cấu hình
-- Settings lưu ở config dir: com.personal.translator/settings.json.
-- Transcript lưu ở app data dir, theo timestamp, định dạng .md.
-
-9. Cấu trúc thư mục
-AI_CabinTranslator/
-- src/
-  - index.html
-  - styles/main.css
-  - js/
-- src-tauri/
-  - src/
-  - tauri.conf.json
-  - Cargo.toml
-- scripts/
-  - local_pipeline.py
-  - setup_mlx.py
-- docs/
-- CabinTranslator_Logo.png
-
-Bản quyền
-Dự án này là sở hữu độc quyền. All rights reserved.
+## 5. BẢO MẬT VÀ QUYỀN RIÊNG TƯ (SECURITY & PRIVACY)
+Hệ thống được thiết kế với ưu tiên cao nhất về quyền riêng tư dữ liệu:
+- Kiến trúc không máy chủ (Zero Server): Ứng dụng kết nối trực tiếp đến các API mà người dùng cấu hình, không qua bất kỳ máy chủ trung gian nào [2].
+- Lưu trữ cục bộ: Khóa API cá nhân và toàn bộ bản tóm tắt phiên dịch (lưu dưới dạng tệp .md) đều chỉ tồn tại trên thiết bị của người dùng [2].
+- Không theo dõi: Hệ thống không yêu cầu tạo tài khoản, không thu thập dữ liệu sử 
