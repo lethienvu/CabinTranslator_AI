@@ -147,7 +147,7 @@ AI_CabinTranslator/
   - local_pipeline.py
   - setup_mlx.py
 - docs/
-- cabinTranslator_banner.png
+- CabinTranslator_Logo.png
 
 Bản quyền
 Dự án này là sở hữu độc quyền. All rights reserved.
