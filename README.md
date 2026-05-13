@@ -1,109 +1,84 @@
 <div align="center">
-  <img src="banner.png" alt="AI Cabin Translator Banner" width="100%" />
-
-  <h1>AI Cabin Translator (Web Edition)</h1>
-  
-  <p><strong>A Real-time Speech-to-Text and Translation Web Application</strong></p>
-  
-  <p>
-    <img src="https://img.shields.io/badge/Frontend-React%2019-61DAFB?style=flat-square&logo=react" alt="Frontend" />
-    <img src="https://img.shields.io/badge/Backend-Node.js%20%2B%20Fastify-339933?style=flat-square&logo=nodedotjs" alt="Backend" />
-    <img src="https://img.shields.io/badge/Build-Vite-646CFF?style=flat-square&logo=vite" alt="Vite" />
-    <img src="https://img.shields.io/badge/Language-TypeScript-3178C6?style=flat-square&logo=typescript" alt="TypeScript" />
-  </p>
+  <img src="cabinTranslator_banner.png" alt="Cabin Translator Banner" width="100%" />
+  <h1>Cabin Translator (Tauri Desktop)</h1>
+  <p>Ứng dụng dịch nói thành văn bản và dịch thời gian thực trên desktop.</p>
 </div>
 
-## 📖 Overview
+Mục tiêu
+- Ghi âm từ hệ thống và micro, chuyển thành văn bản, dịch theo thời gian thực.
+- Hiển thị song song văn bản gốc và bản dịch trong giao diện trong suốt.
+- Hỗ trợ TTS để đọc bản dịch bằng nhiều nhà cung cấp.
 
-**AI Cabin Translator (Web Edition)** is the modern web-based successor to the original Tauri desktop application. It provides seamless, real-time speech recognition and translation directly in the browser, featuring advanced dual-panel transcript displays, system and microphone audio capture, and multi-provider Text-to-Speech (TTS) integration.
+Tổng quan hệ thống
+Ứng dụng được xây dựng trên Tauri 2.0. Frontend là giao diện HTML/CSS/JavaScript chạy trong WebView. Backend là Rust, quản lý thu âm hệ thống, thu âm micro, lưu settings, lưu transcript, và proxy Edge TTS.
 
-Designed with a privacy-first approach, the core STT processing connects directly to cloud providers from the client-side, while a lightweight Node.js backend proxy handles API protections and WebSocket limitations for TTS features.
+Kiến trúc tổng thể
+1) Frontend (src/index.html, src/js)
+- App controller: src/js/app.js
+- UI và hiển thị transcript: src/js/ui.js
+- Soniox client WebSocket: src/js/soniox.js
+- TTS providers: src/js/edge-tts.js, src/js/elevenlabs-tts.js, src/js/google-tts.js
+- Audio playback queue: src/js/audio-player.js
+- Quản lý settings: src/js/settings.js
 
-## ✨ Features
+2) Backend Tauri (src-tauri)
+- Invoke commands: audio, settings, transcript, local_pipeline, edge_tts
+- Thu âm hệ thống: ScreenCaptureKit (macOS) hoặc WASAPI (Windows)
+- Thu âm micro: cpal
+- Lưu settings: JSON trong config dir
+- Lưu transcript: file markdown theo timestamp trong app data dir
+- Proxy Edge TTS: Rust WebSocket xử lý token và trả về base64 MP3
 
-- 🎙️ **Real-time Translation:** Connects to Soniox STT via WebSocket for continuous, low-latency translation.
-- 🎧 **Multi-Source Audio Capture:** Capture audio from the microphone via `getUserMedia` or system audio via `getDisplayMedia` (browser capabilities).
-- ⚙️ **Audio Downsampling Worklet:** Native browser `AudioWorklet` automatically converts 48kHz stereo to 16kHz PCM for optimized API payload efficiency.
-- 🗣️ **Premium TTS Integration:** High-quality voice output using Microsoft Edge TTS (via backend proxy), Google Cloud, and ElevenLabs.
-- 🚀 **Zero-Downtime Sessions:** "Make-before-break" reconnect strategies ensure continuous translation without drops during long sessions.
-- 💻 **Monorepo Architecture:** Cleanly separated `frontend` (React + Vite) and `backend` (Fastify + TypeScript) workspaces.
+Luồng dữ liệu chính
+Audio capture
+- Nguồn âm thanh: system, microphone, hoặc cả hai.
+- Rust thu âm và chuyển về PCM s16le 16kHz mono.
+- Dữ liệu được gửi sang frontend qua Tauri IPC channel.
 
-## 🏗️ Architecture
+STT và dịch
+- Frontend mở kết nối WebSocket tới Soniox.
+- Gửi audio liên tục, nhận token, văn bản gốc và bản dịch.
+- Hỗ trợ gợi ý ngôn ngữ, chế độ one-way và two-way, và context cho Soniox.
+- Có cơ chế reconnect và reset session để duy trì kết nối dài.
 
-```mermaid
-graph TD
-    A["🎙️ Mic / System Audio (Browser)"] --> B["AudioWorklet (16kHz PCM)"]
-    B -->|"WebSocket Stream"| C["☁️ Soniox STT + Translation API"]
-    C -->|"Tokens + Translated Text"| D["React Frontend (Zustand State)"]
-    D -->|"Fetch TTS"| E["Node.js Backend (Fastify)"]
-    E -->|"Proxy Request"| F["Edge TTS / Other APIs"]
-    F -->|"Audio Stream"| D
-    D --> G["🖥️ User Interface (Transcripts)"]
-```
+Local pipeline (tùy chọn)
+- Rust chạy Python sidecar (scripts/local_pipeline.py) khi chọn chế độ local.
+- Audio được gửi sang pipeline và nhận kết quả qua IPC channel.
+- Có script setup MLX (scripts/setup_mlx.py) để cài môi trường.
 
-## 🛠️ Technology Stack
+TTS
+- Edge TTS: frontend gọi command edge_tts_speak trong Rust; Rust proxy WebSocket, trả về base64 MP3.
+- ElevenLabs và Google TTS: frontend gọi API và phát lại bằng AudioPlayer.
+- AudioPlayer quản lý hàng đợi, giảm độ trễ và gộp nhiều đoạn âm thanh.
 
-**Frontend (Client)**
-- React 19 + TypeScript
-- Vite (Build Tool & HMR)
-- Zustand (State Management)
-- Web Audio API & AudioWorklet
+Lưu trữ và cấu hình
+- Settings được đọc và ghi bằng tauri command get_settings/save_settings.
+- File settings.json nằm trong config dir (com.personal.translator).
+- Transcript được lưu thành file .md theo thời gian trong app data dir.
 
-**Backend (Server)**
-- Node.js 22 + TypeScript
-- Fastify (High-performance API framework)
-- `ws` (WebSocket proxying)
+Các thành phần quan trọng trong Rust
+- src-tauri/src/lib.rs: khởi tạo Tauri, register commands và state.
+- src-tauri/src/commands/audio.rs: bật tắt thu âm, gom nhiều nguồn.
+- src-tauri/src/audio/system_audio.rs và microphone.rs: xử lý thu âm và resample.
+- src-tauri/src/commands/edge_tts.rs: proxy Edge TTS.
+- src-tauri/src/commands/local_pipeline.rs: quản lý Python sidecar.
+- src-tauri/src/commands/transcript.rs: lưu và mở thư mục transcript.
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (v20 or higher recommended)
-- npm or yarn
-
-### 1. Installation
-
-Clone the repository and install all dependencies from the monorepo root:
-
-```bash
-git clone https://github.com/lethienvu/AI_CabinTranslator.git
-cd AI_CabinTranslator
-npm run install:all
-```
-
-### 2. Environment Variables
-
-Create a `.env` file in the `backend` directory (if required for API keys, though Edge TTS proxy is currently keyless). For custom STT or TTS providers, refer to the documentation to set up your tokens.
-
-### 3. Running the Development Server
-
-The monorepo is managed via `concurrently`. You can start both the frontend and backend servers simultaneously from the root directory:
-
-```bash
-npm run dev
-```
-
-- **Frontend:** http://localhost:5173
-- **Backend:** http://localhost:3000
-
-## 📁 Project Structure
-
-```text
+Cấu trúc thư mục
 AI_CabinTranslator/
-├── frontend/             # React 19 frontend workspace
-│   ├── src/
-│   │   ├── worklets/     # Custom AudioWorklet processors
-│   │   ├── App.tsx       # Main React component
-│   │   └── main.tsx      # Entry point
-│   └── vite.config.ts    # Vite config (proxies API to backend)
-├── backend/              # Node.js Fastify backend workspace
-│   ├── src/
-│   │   └── index.ts      # Fastify server & Edge TTS WebSocket proxy
-│   └── package.json
-├── _reference-desktop_/  # Legacy Tauri desktop app source (git-ignored)
-├── package.json          # Root monorepo configuration
-└── README.md             # Project documentation
-```
+- src/
+  - index.html
+  - styles/main.css
+  - js/
+- src-tauri/
+  - src/
+  - tauri.conf.json
+  - Cargo.toml
+- scripts/
+  - local_pipeline.py
+  - setup_mlx.py
+- docs/
+- cabinTranslator_banner.png
 
-## 📜 License
-
-This project is proprietary. All rights reserved.
+Bản quyền
+Dự án này là sở hữu độc quyền. All rights reserved.
