@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   My Translator — Main Stylesheet
+   Cabin Translator — Main Stylesheet
    Dark glassmorphism overlay theme
    ═══════════════════════════════════════════════════════════ */
 
@@ -14,7 +14,7 @@
 
 :root {
   /* Color Palette */
-  --bg-primary: rgba(15, 15, 20, 0.88);
+  --bg-primary: rgba(15, 15, 20, 1);
   --bg-secondary: rgba(25, 25, 35, 0.92);
   --bg-glass: rgba(30, 30, 45, 0.65);
   --bg-input: rgba(40, 40, 55, 0.7);
@@ -23,20 +23,20 @@
 
   --border-subtle: rgba(255, 255, 255, 0.06);
   --border-light: rgba(255, 255, 255, 0.1);
-  --border-focus: rgba(99, 140, 255, 0.5);
+  --border-focus: rgba(9, 63, 180, 0.5);
 
   --text-primary: rgba(255, 255, 255, 0.92);
   --text-secondary: rgba(255, 255, 255, 0.55);
   --text-muted: rgba(255, 255, 255, 0.35);
   --text-provisional: rgba(255, 255, 255, 0.4);
 
-  --accent: #638cff;
-  --accent-hover: #7ea0ff;
-  --accent-glow: rgba(99, 140, 255, 0.15);
+  --accent: #093FB4;
+  --accent-hover: #2359CE;
+  --accent-glow: rgba(9, 63, 180, 0.15);
 
   --success: #4ade80;
   --warning: #fbbf24;
-  --error: #f87171;
+  --error: #B52509;
 
   /* Sizing */
   --control-bar-height: 42px;
@@ -51,13 +51,16 @@
 
 html,
 body {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 12px; /* Space for the CSS drop shadow */
+  box-sizing: border-box;
   overflow: hidden;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   color: var(--text-primary);
-  background: transparent;
+  background-color: transparent !important;
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }
@@ -84,13 +87,9 @@ body {
   background: var(--bg-primary);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
   overflow: hidden;
+  transform: translateZ(0); /* Fix WebKit border-radius clipping bug */
 }
 
 /* ─── Drag Region / Control Bar ────────────────────────── */
@@ -99,14 +98,98 @@ body {
   height: var(--control-bar-height);
   border-bottom: 1px solid var(--border-subtle);
   background: rgba(20, 20, 30, 0.4);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
 }
 
 .control-bar {
+  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
   padding: 0 8px;
   gap: 6px;
+}
+
+.control-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 4px;
+}
+
+.mac-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  background-color: #8c8c8c; /* default */
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.mac-dot svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0;
+  color: rgba(0, 0, 0, 0.6);
+  transition: opacity 0.2s;
+}
+
+.control-left:hover .mac-dot svg {
+  opacity: 1;
+}
+
+.close-dot {
+  background-color: #ff5f56;
+  border-color: #e0443e;
+}
+
+.minimize-dot {
+  background-color: #ffbd2e;
+  border-color: #dea123;
+}
+
+.compact-dot {
+  background-color: #27c93f;
+  border-color: #1aab29;
+}
+
+.pin-dot {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pin-dot.active {
+  background-color: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+.pin-dot svg {
+  color: #fff;
+}
+
+.control-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  pointer-events: none;
+}
+
+.control-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
 }
 
 /* Icon Buttons */
@@ -267,8 +350,6 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-left: 4px;
-  flex: 1;
   pointer-events: none;
 }
 
@@ -620,35 +701,199 @@ body {
   margin-bottom: 2px;
 }
 
-/* ─── Floating Controls (bottom) ────────────────────── */
-.floating-controls {
+/* ─── Floating Action Bar (bottom center) ────────────────────────── */
+#action-bar {
   position: absolute;
   bottom: 24px;
-  right: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 30, 45, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  padding: 6px 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  z-index: 20;
+  opacity: 0.6;
+  transform: translateX(-50%);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-app-region: no-drag;
+}
+
+#overlay-view:hover #action-bar {
+  opacity: 1;
+  transform: translateX(-50%) scale(1.02);
+}
+
+.ab-source-group {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  padding: 2px;
+}
+
+.ab-source-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.ab-source-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ab-source-btn.active {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.ab-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-light);
+  margin: 0 4px;
+}
+
+.ab-start-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 30px;
+  border-radius: 18px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.ab-start-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.ab-start-btn.recording {
+  background: var(--error);
+  box-shadow: 0 2px 8px rgba(181, 37, 9, 0.4);
+  animation: recordPulseAB 2s infinite;
+}
+
+.ab-start-btn.recording:hover {
+  background: #CF3F23;
+}
+
+@keyframes recordPulseAB {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(181, 37, 9, 0.4); }
+  50% { box-shadow: 0 0 12px 4px rgba(181, 37, 9, 0.2); }
+}
+
+.ab-tts-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  z-index: 10;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ab-tts-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.ab-tts-btn.active {
+  background: rgba(9, 63, 180, 0.2);
+  border-color: var(--accent);
+  color: #63b3ed;
+}
+
+.ab-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.ab-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+/* ─── Floating Controls (bottom right) ────────────────────── */
+.floating-controls {
+  position: absolute;
+  bottom: 70px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 30;
   opacity: 0;
-  transition: opacity 0.2s;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(30, 30, 45, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-#overlay-view:hover .floating-controls {
+.floating-controls.show {
   opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
-.font-controls {
+.floating-controls .font-controls {
   display: flex;
   align-items: center;
   gap: 2px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
-  padding: 2px 4px;
+  padding: 2px;
 }
 
-.float-btn {
-  width: 26px;
-  height: 26px;
+.floating-controls .float-btn {
+  width: 20px;
+  height: 20px;
   border-radius: 5px;
   border: none;
   background: rgba(255, 255, 255, 0.08);
@@ -657,39 +902,40 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 600;
   transition: all 0.15s;
 }
 
-.float-btn:hover {
+.floating-controls .float-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.8);
 }
 
-.float-btn.active {
+.floating-controls .float-btn.active {
   background: rgba(99, 179, 237, 0.2);
   color: #63b3ed;
 }
 
-.font-size-label {
+.floating-controls .font-size-label {
   color: rgba(255, 255, 255, 0.4);
-  font-size: 10px;
-  min-width: 20px;
+  font-size: 12px;
+  min-width: 28px;
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
-.color-controls {
+.floating-controls .color-controls {
   display: flex;
   align-items: center;
   gap: 4px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   padding: 4px 6px;
+  margin: 0 auto;
 }
 
-.color-dot {
+.floating-controls .color-dot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -700,11 +946,11 @@ body {
   outline: none;
 }
 
-.color-dot:hover {
+.floating-controls .color-dot:hover {
   transform: scale(1.2);
 }
 
-.color-dot.active {
+.floating-controls .color-dot.active {
   border-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
 }
@@ -823,9 +1069,6 @@ body {
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 

@@ -1,6 +1,6 @@
 # Installation Guide
 
-Step-by-step guide to install and use **My Translator** on macOS.
+Step-by-step guide to install and use **Cabin Translator** on macOS.
 
 ---
 
@@ -15,25 +15,25 @@ Step-by-step guide to install and use **My Translator** on macOS.
 
 ## Step 1 — Download
 
-Download the latest `.dmg` from: [**Releases — macOS**](https://github.com/phuc-nt/my-translator/releases/latest)
+Download the latest `.dmg` from your internal distribution channel.
 
 Choose the right file:
-- `MyTranslator_x.x.x_aarch64.dmg` — Apple Silicon (M1/M2/M3/M4)
-- `MyTranslator_x.x.x_x64.dmg` — Intel Mac
+- `CabinTranslator_x.x.x_aarch64.dmg` — Apple Silicon (M1/M2/M3/M4)
+- `CabinTranslator_x.x.x_x64.dmg` — Intel Mac
 
 ---
 
 ## Step 2 — Install
 
 1. Open the `.dmg` file
-2. Drag **My Translator** into the **Applications** folder
+2. Drag **Cabin Translator** into the **Applications** folder
 3. Eject the DMG
 
 ---
 
 ## Step 3 — First Launch
 
-Open My Translator from Applications.
+Open Cabin Translator from Applications.
 
 > ✅ The app is signed and notarized — macOS should allow it without any security warnings.
 
@@ -44,7 +44,7 @@ Open My Translator from Applications.
 On first launch, macOS will ask for **Screen & System Audio Recording** permission:
 
 1. Click **Open System Settings** when prompted
-2. Find **My Translator** in the list
+2. Find **Cabin Translator** in the list
 3. **Toggle the switch ON**
 4. macOS will ask to **Quit & Reopen** — click that button
 
@@ -159,7 +159,7 @@ See [TTS Guide](tts_guide.md) for step-by-step API key instructions.
 
 ## Updating
 
-My Translator includes **auto-update**. When a new version is available:
+Cabin Translator includes **auto-update**. When a new version is available:
 
 1. A **green badge** appears on the ⚙️ settings icon
 2. Open Settings → **About** tab → click **Download & Install**

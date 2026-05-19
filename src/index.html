@@ -4,135 +4,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Translator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/main.css" />
+  <title>Cabin Translator</title>
+
+  <link rel="stylesheet" href="./styles/main.css" />
 </head>
 
 <body>
-  <!-- ═══════════════════ OVERLAY VIEW ═══════════════════ -->
+  <!-- =================== OVERLAY VIEW =================== -->
   <div id="overlay-view" class="view active">
     <!-- Drag Region (title bar area) -->
     <div id="drag-region" data-tauri-drag-region>
       <div class="control-bar" data-tauri-drag-region>
-        <button id="btn-settings" class="icon-btn" title="Settings">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3" />
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
-          <span id="settings-badge" class="settings-badge" style="display:none"></span>
-        </button>
-
-        <div class="status-area" data-tauri-drag-region>
-          <span id="status-indicator" class="status-dot disconnected"></span>
-          <span id="status-text" class="status-text">Ready</span>
-        </div>
-
-        <div class="source-controls">
-          <button id="btn-source-system" class="source-btn active" title="System Audio (⌘1)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+        <div class="control-left">
+          <button id="btn-close" class="mac-dot close-dot" title="Đóng">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_2867_11572)">
+                <path
+                  d="M5.30324 23.2915C5.71339 23.69 6.39308 23.69 6.79152 23.2915L14.2915 15.7915L21.7915 23.2915C22.19 23.69 22.8814 23.7017 23.2798 23.2915C23.6782 22.8814 23.6782 22.2134 23.2798 21.815L15.7798 14.3032L23.2798 6.80324C23.6782 6.4048 23.69 5.72511 23.2798 5.32668C22.8696 4.91652 22.19 4.91652 21.7915 5.32668L14.2915 12.8267L6.79152 5.32668C6.39308 4.91652 5.70168 4.9048 5.30324 5.32668C4.9048 5.73683 4.9048 6.4048 5.30324 6.80324L12.8032 14.3032L5.30324 21.815C4.9048 22.2134 4.89308 22.8931 5.30324 23.2915Z"
+                  fill="black" fill-opacity="0.85" />
+              </g>
+              <defs>
+                <clipPath id="clip0_2867_11572">
+                  <rect width="18.583" height="18.5948" fill="white" transform="translate(5 5)" />
+                </clipPath>
+              </defs>
             </svg>
           </button>
-          <button id="btn-source-mic" class="source-btn" title="Microphone (⌘2)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-              <line x1="12" y1="19" x2="12" y2="23" />
-              <line x1="8" y1="23" x2="16" y2="23" />
+          <button id="btn-minimize" class="mac-dot minimize-dot" title="Thu nhỏ">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M18 12.75H6C5.59 12.75 5.25 12.41 5.25 12C5.25 11.59 5.59 11.25 6 11.25H18C18.41 11.25 18.75 11.59 18.75 12C18.75 12.41 18.41 12.75 18 12.75Z"
+                fill="currentColor" />
             </svg>
+
           </button>
-          <button id="btn-source-both" class="source-btn" title="System + Mic (⌘3)">
-            <svg width="16" height="14" viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="9 6 5 9 2 9 2 15 5 15 9 18 9 6" />
-              <path d="M12.5 9.5a3 3 0 0 1 0 5" />
-              <path d="M20 4a2.5 2.5 0 0 0-2.5 2.5v5a2.5 2.5 0 0 0 5 0v-5A2.5 2.5 0 0 0 20 4z" />
-              <path d="M25 10v1.5a5 5 0 0 1-10 0V10" />
+
+          <button id="btn-pin" class="mac-dot pin-dot active" title="Ghim">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <path d="M12 17v5" />
+              <path
+                d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76z" />
             </svg>
           </button>
         </div>
 
-        <button id="btn-start" class="action-btn" title="Start/Stop (Space)">
-          <svg id="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
-          <svg id="icon-stop" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-            <rect x="4" y="4" width="16" height="16" rx="2" />
-          </svg>
-        </button>
-
-        <button id="btn-tts" class="tts-action-btn" title="TTS Narration (⌘T)">
-          <svg id="icon-tts-off" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            <line x1="9" y1="10" x2="15" y2="10" />
-          </svg>
-          <svg id="icon-tts-on" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            <path d="M9 10h2" /><path d="M13 8v4" /><path d="M15 10h1" />
-          </svg>
-          <span class="tts-label">TTS</span>
-        </button>
-
-        <div class="toolbar-group">
-          <button id="btn-clear" class="icon-btn" title="Clear transcript">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-            </svg>
-          </button>
-
-          <button id="btn-copy" class="icon-btn" title="Copy transcript">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-          </button>
-
-          <button id="btn-open-transcripts" class="icon-btn" title="Open saved transcripts">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-            </svg>
-          </button>
+        <div class="control-center" data-tauri-drag-region>
+          <div class="status-area" data-tauri-drag-region>
+            <span id="status-indicator" class="status-dot disconnected"></span>
+            <span id="status-text" class="status-text">Ready</span>
+          </div>
         </div>
 
-        <button id="btn-compact" class="icon-btn" title="Compact mode — hide control bar">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="4 14 10 14 10 20" />
-            <polyline points="20 10 14 10 14 4" />
-            <line x1="14" y1="10" x2="21" y2="3" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-        </button>
-
-        <button id="btn-pin" class="icon-btn active" title="Pin on top (always visible)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 17v5" />
-            <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76z" />
-          </svg>
-        </button>
-
-        <button id="btn-minimize" class="icon-btn" title="Minimize to taskbar">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-        </button>
-
-        <button id="btn-close" class="icon-btn close-btn" title="Close">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
+        <div class="control-right">
+        </div>
       </div>
     </div>
 
     <!-- Transcript Area -->
-    <div id="transcript-container" data-tauri-drag-region>
-      <div id="transcript-content" data-tauri-drag-region>
+    <div id="transcript-container">
+      <div id="transcript-content">
         <div class="transcript-placeholder">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
             opacity="0.4">
@@ -141,36 +71,165 @@
             <line x1="12" y1="19" x2="12" y2="23" />
             <line x1="8" y1="23" x2="16" y2="23" />
           </svg>
-          <p>Press ▶ to start translating</p>
+          <p>Nhấn Bắt đầu để dịch</p>
         </div>
       </div>
     </div>
 
-    <!-- Floating controls (bottom) -->
-    <div class="floating-controls">
-      <div class="font-controls">
-        <button id="btn-font-down" class="float-btn" title="Decrease font size">A−</button>
-        <span id="font-size-display" class="font-size-label">16</span>
-        <button id="btn-font-up" class="float-btn" title="Increase font size">A+</button>
+    <!-- Floating Action Bar (bottom center) -->
+    <div id="action-bar">
+      <!-- Source selector -->
+      <div class="ab-source-group">
+        <button id="btn-source-system" class="ab-source-btn active" title="Hệ thống (Cmd+1)">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.55 20.5901C11.76 20.5901 10.89 20.3101 10.02 19.7601L7.1 17.9301C6.9 17.8101 6.67 17.7401 6.44 17.7401H5C2.58 17.7401 1.25 16.4101 1.25 13.9901V9.99011C1.25 7.57011 2.58 6.24011 5 6.24011H6.43C6.66 6.24011 6.89 6.17011 7.09 6.05011L10.01 4.22011C11.47 3.31011 12.89 3.14011 14.01 3.76011C15.13 4.38011 15.74 5.67011 15.74 7.40011V16.5701C15.74 18.2901 15.12 19.5901 14.01 20.2101C13.57 20.4701 13.07 20.5901 12.55 20.5901ZM5 7.75011C3.42 7.75011 2.75 8.42011 2.75 10.0001V14.0001C2.75 15.5801 3.42 16.2501 5 16.2501H6.43C6.95 16.2501 7.45 16.3901 7.89 16.6701L10.81 18.5001C11.77 19.1001 12.68 19.2601 13.29 18.9201C13.9 18.5801 14.25 17.7301 14.25 16.6001V7.41011C14.25 6.27011 13.9 5.42011 13.29 5.09011C12.68 4.75011 11.77 4.90011 10.81 5.51011L7.88 7.33011C7.45 7.61011 6.94 7.75011 6.43 7.75011H5Z" fill="currentColor"/>
+<path d="M18 16.7498C17.84 16.7498 17.69 16.6998 17.55 16.5998C17.22 16.3498 17.15 15.8798 17.4 15.5498C18.97 13.4598 18.97 10.5398 17.4 8.44978C17.15 8.11978 17.22 7.64978 17.55 7.39978C17.88 7.14978 18.35 7.21978 18.6 7.54978C20.56 10.1698 20.56 13.8298 18.6 16.4498C18.45 16.6498 18.23 16.7498 18 16.7498Z" fill="currentColor"/>
+<path d="M19.83 19.2498C19.67 19.2498 19.52 19.1998 19.38 19.0998C19.05 18.8498 18.98 18.3798 19.23 18.0498C21.9 14.4898 21.9 9.50978 19.23 5.94978C18.98 5.61978 19.05 5.14978 19.38 4.89978C19.71 4.64978 20.18 4.71978 20.43 5.04978C23.5 9.13978 23.5 14.8598 20.43 18.9498C20.29 19.1498 20.06 19.2498 19.83 19.2498Z" fill="currentColor"/>
+</svg>
+
+        </button>
+        <button id="btn-source-mic" class="ab-source-btn" title="Microphone (Cmd+2)">
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 19.75C8.28 19.75 5.25 16.72 5.25 13V8C5.25 4.28 8.28 1.25 12 1.25C15.72 1.25 18.75 4.28 18.75 8V13C18.75 16.72 15.72 19.75 12 19.75ZM12 2.75C9.11 2.75 6.75 5.1 6.75 8V13C6.75 15.9 9.11 18.25 12 18.25C14.89 18.25 17.25 15.9 17.25 13V8C17.25 5.1 14.89 2.75 12 2.75Z" fill="currentColor"/>
+<path d="M12 22.75C6.62 22.75 2.25 18.38 2.25 13V11C2.25 10.59 2.59 10.25 3 10.25C3.41 10.25 3.75 10.59 3.75 11V13C3.75 17.55 7.45 21.25 12 21.25C16.55 21.25 20.25 17.55 20.25 13V11C20.25 10.59 20.59 10.25 21 10.25C21.41 10.25 21.75 10.59 21.75 11V13C21.75 18.38 17.38 22.75 12 22.75Z" fill="currentColor"/>
+<path d="M14.61 8.22988C14.53 8.22988 14.44 8.21988 14.35 8.18988C12.74 7.60988 10.97 7.60988 9.36 8.18988C8.98 8.32988 8.55 8.12988 8.41 7.73988C8.27 7.34988 8.47 6.91988 8.86 6.77988C10.8 6.07988 12.93 6.07988 14.87 6.77988C15.26 6.91988 15.46 7.34988 15.32 7.73988C15.21 8.04988 14.92 8.22988 14.61 8.22988Z" fill="currentColor"/>
+<path d="M13.7 11.23C13.64 11.23 13.57 11.22 13.5 11.2C12.43 10.91 11.3 10.91 10.23 11.2C9.82004 11.31 9.42004 11.07 9.31004 10.67C9.20004 10.27 9.44004 9.85998 9.84004 9.74998C11.17 9.38998 12.57 9.38998 13.9 9.74998C14.3 9.85998 14.54 10.27 14.43 10.67C14.33 11.02 14.03 11.23 13.7 11.23Z" fill="currentColor"/>
+</svg>
+
+        </button>
+        <button id="btn-source-both" class="ab-source-btn" title="Cả hai (Cmd+3)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 14.8901C5.59 14.8901 5.25 14.5501 5.25 14.1401V9.8501C5.25 9.4401 5.59 9.1001 6 9.1001C6.41 9.1001 6.75 9.4401 6.75 9.8501V14.1401C6.75 14.5601 6.41 14.8901 6 14.8901Z" fill="currentColor"/>
+<path d="M9 16.3197C8.59 16.3197 8.25 15.9797 8.25 15.5697V8.42969C8.25 8.01969 8.59 7.67969 9 7.67969C9.41 7.67969 9.75 8.01969 9.75 8.42969V15.5697C9.75 15.9897 9.41 16.3197 9 16.3197Z" fill="currentColor"/>
+<path d="M12 17.75C11.59 17.75 11.25 17.41 11.25 17V7C11.25 6.59 11.59 6.25 12 6.25C12.41 6.25 12.75 6.59 12.75 7V17C12.75 17.41 12.41 17.75 12 17.75Z" fill="currentColor"/>
+<path d="M15 16.3197C14.59 16.3197 14.25 15.9797 14.25 15.5697V8.42969C14.25 8.01969 14.59 7.67969 15 7.67969C15.41 7.67969 15.75 8.01969 15.75 8.42969V15.5697C15.75 15.9897 15.41 16.3197 15 16.3197Z" fill="currentColor"/>
+<path d="M18 14.8901C17.59 14.8901 17.25 14.5501 17.25 14.1401V9.8501C17.25 9.4401 17.59 9.1001 18 9.1001C18.41 9.1001 18.75 9.4401 18.75 9.8501V14.1401C18.75 14.5601 18.41 14.8901 18 14.8901Z" fill="currentColor"/>
+<path d="M15 22.75H9C3.57 22.75 1.25 20.43 1.25 15V9C1.25 3.57 3.57 1.25 9 1.25H15C20.43 1.25 22.75 3.57 22.75 9V15C22.75 20.43 20.43 22.75 15 22.75ZM9 2.75C4.39 2.75 2.75 4.39 2.75 9V15C2.75 19.61 4.39 21.25 9 21.25H15C19.61 21.25 21.25 19.61 21.25 15V9C21.25 4.39 19.61 2.75 15 2.75H9Z" fill="currentColor"/>
+</svg>
+
+        </button>
       </div>
-      <div class="color-controls">
-        <button class="color-dot active" data-color="#ffffff" title="White" style="background:#ffffff;"></button>
-        <button class="color-dot" data-color="#ffd700" title="Yellow" style="background:#ffd700;"></button>
-        <button class="color-dot" data-color="#00e5ff" title="Cyan" style="background:#00e5ff;"></button>
-      </div>
-      <button id="btn-view-mode" class="float-btn" title="Toggle dual view">
+
+      <div class="ab-divider"></div>
+
+      <!-- Start / Stop -->
+      <button id="btn-start" class="ab-start-btn" title="Bắt đầu / Dừng (Space)">
+      <svg id="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.7 8.97989L4.14 17.7099C4.05 17.3799 4 17.0299 4 16.6699V7.32989C4 4.24989 7.33 2.32989 10 3.86989L14.04 6.19989L18.09 8.53989C18.31 8.66989 18.52 8.80989 18.7 8.97989Z" fill="currentColor"/>
+<path opacity="0.4" d="M18.09 15.4598L14.04 17.7998L9.99997 20.1298C8.08997 21.2298 5.83997 20.5698 4.71997 18.9598L5.13997 18.7098L19.58 10.0498C20.58 11.8498 20.09 14.3098 18.09 15.4598Z" fill="currentColor"/>
+</svg>
+
+
+        <svg id="icon-stop" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+        </svg>
+        <span id="start-label">Bắt đầu</span>
+      </button>
+
+      <!-- TTS -->
+      <button id="btn-tts" class="ab-tts-btn" title="Đọc phiên dịch (Cmd+T)">
+<svg id="icon-tts-off" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.4" d="M2.74982 18.6498C2.33982 18.6498 1.99982 18.3098 1.99982 17.8998V12.1998C1.94982 9.4898 2.95982 6.9298 4.83982 5.0098C6.71982 3.0998 9.23982 2.0498 11.9498 2.0498C17.4898 2.0498 21.9998 6.5598 21.9998 12.0998V17.7998C21.9998 18.2098 21.6598 18.5498 21.2498 18.5498C20.8398 18.5498 20.4998 18.2098 20.4998 17.7998V12.0998C20.4998 7.3898 16.6698 3.5498 11.9498 3.5498C9.63982 3.5498 7.49982 4.43981 5.90982 6.0598C4.30982 7.68981 3.45982 9.85981 3.49982 12.1798V17.8898C3.49982 18.3098 3.16982 18.6498 2.74982 18.6498Z" fill="currentColor"/>
+<path d="M5.94 12.4502H5.81C3.71 12.4502 2 14.1602 2 16.2602V18.1402C2 20.2402 3.71 21.9502 5.81 21.9502H5.94C8.04 21.9502 9.75 20.2402 9.75 18.1402V16.2602C9.75 14.1602 8.04 12.4502 5.94 12.4502Z" fill="currentColor"/>
+<path d="M18.19 12.4502H18.06C15.96 12.4502 14.25 14.1602 14.25 16.2602V18.1402C14.25 20.2402 15.96 21.9502 18.06 21.9502H18.19C20.29 21.9502 22 20.2402 22 18.1402V16.2602C22 14.1602 20.29 12.4502 18.19 12.4502Z" fill="currentColor"/>
+</svg>
+
+<svg id="icon-tts-on" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.1802 11.8596C12.7802 11.8596 12.4202 11.6397 12.2502 11.2797L10.8002 8.38964L10.3802 9.16961C10.1502 9.59961 9.69023 9.86962 9.20023 9.86962H8.47021C8.06021 9.86962 7.72021 9.52962 7.72021 9.11962C7.72021 8.70962 8.06021 8.36962 8.47021 8.36962H9.1102L9.90021 6.9096C10.0902 6.5696 10.4702 6.33961 10.8302 6.35961C11.2202 6.35961 11.5702 6.58961 11.7502 6.92961L13.1802 9.7896L13.5202 9.0996C13.7502 8.6396 14.2002 8.35961 14.7202 8.35961H15.5302C15.9402 8.35961 16.2802 8.69961 16.2802 9.10961C16.2802 9.51961 15.9402 9.85961 15.5302 9.85961H14.8202L14.1102 11.2696C13.9302 11.6396 13.5802 11.8596 13.1802 11.8596Z" fill="currentColor"/>
+<path opacity="0.4" d="M2.74982 18.6498C2.33982 18.6498 1.99982 18.3098 1.99982 17.8998V12.1998C1.94982 9.48983 2.95981 6.92983 4.83981 5.00983C6.71981 3.09983 9.23983 2.0498 11.9498 2.0498C17.4898 2.0498 21.9998 6.55979 21.9998 12.0998V17.7998C21.9998 18.2098 21.6598 18.5498 21.2498 18.5498C20.8398 18.5498 20.4998 18.2098 20.4998 17.7998V12.0998C20.4998 7.38979 16.6698 3.5498 11.9498 3.5498C9.63983 3.5498 7.49982 4.43981 5.90982 6.05981C4.30982 7.68981 3.45982 9.85981 3.49982 12.1798V17.8898C3.49982 18.3098 3.16982 18.6498 2.74982 18.6498Z" fill="currentColor"/>
+<path d="M5.94 12.4502H5.81C3.71 12.4502 2 14.1602 2 16.2602V18.1402C2 20.2402 3.71 21.9502 5.81 21.9502H5.94C8.04 21.9502 9.75 20.2402 9.75 18.1402V16.2602C9.75 14.1602 8.04 12.4502 5.94 12.4502Z" fill="currentColor"/>
+<path d="M18.19 12.4502H18.06C15.96 12.4502 14.25 14.1602 14.25 16.2602V18.1402C14.25 20.2402 15.96 21.9502 18.06 21.9502H18.19C20.29 21.9502 22 20.2402 22 18.1402V16.2602C22 14.1602 20.29 12.4502 18.19 12.4502Z" fill="currentColor"/>
+</svg>
+
+        <span>TTS</span>
+      </button>
+
+      <div class="ab-divider"></div>
+
+      <!-- Utility actions -->
+      <button id="btn-clear" class="ab-icon-btn" title="Xóa transcript">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.9999 6.73046C20.9799 6.73046 20.9499 6.73046 20.9199 6.73046C15.6299 6.20046 10.3499 6.00046 5.11992 6.53046L3.07992 6.73046C2.65992 6.77046 2.28992 6.47046 2.24992 6.05046C2.20992 5.63046 2.50992 5.27046 2.91992 5.23046L4.95992 5.03046C10.2799 4.49046 15.6699 4.70046 21.0699 5.23046C21.4799 5.27046 21.7799 5.64046 21.7399 6.05046C21.7099 6.44046 21.3799 6.73046 20.9999 6.73046Z" fill="currentColor"/>
+<path d="M8.50001 5.72C8.46001 5.72 8.42001 5.72 8.37001 5.71C7.97001 5.64 7.69001 5.25 7.76001 4.85L7.98001 3.54C8.14001 2.58 8.36001 1.25 10.69 1.25H13.31C15.65 1.25 15.87 2.63 16.02 3.55L16.24 4.85C16.31 5.26 16.03 5.65 15.63 5.71C15.22 5.78 14.83 5.5 14.77 5.1L14.55 3.8C14.41 2.93 14.38 2.76 13.32 2.76H10.7C9.64001 2.76 9.62001 2.9 9.47001 3.79L9.24001 5.09C9.18001 5.46 8.86001 5.72 8.50001 5.72Z" fill="currentColor"/>
+<path d="M15.2099 22.7496H8.7899C5.2999 22.7496 5.1599 20.8196 5.0499 19.2596L4.3999 9.18959C4.3699 8.77959 4.6899 8.41959 5.0999 8.38959C5.5199 8.36959 5.8699 8.67959 5.8999 9.08959L6.5499 19.1596C6.6599 20.6796 6.6999 21.2496 8.7899 21.2496H15.2099C17.3099 21.2496 17.3499 20.6796 17.4499 19.1596L18.0999 9.08959C18.1299 8.67959 18.4899 8.36959 18.8999 8.38959C19.3099 8.41959 19.6299 8.76959 19.5999 9.18959L18.9499 19.2596C18.8399 20.8196 18.6999 22.7496 15.2099 22.7496Z" fill="currentColor"/>
+<path d="M13.6601 17.25H10.3301C9.92008 17.25 9.58008 16.91 9.58008 16.5C9.58008 16.09 9.92008 15.75 10.3301 15.75H13.6601C14.0701 15.75 14.4101 16.09 14.4101 16.5C14.4101 16.91 14.0701 17.25 13.6601 17.25Z" fill="currentColor"/>
+<path d="M14.5 13.25H9.5C9.09 13.25 8.75 12.91 8.75 12.5C8.75 12.09 9.09 11.75 9.5 11.75H14.5C14.91 11.75 15.25 12.09 15.25 12.5C15.25 12.91 14.91 13.25 14.5 13.25Z" fill="currentColor"/>
+</svg>
+
+      </button>
+
+      <button id="btn-copy" class="ab-icon-btn" title="Sao chép transcript">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="18" rx="1" />
-          <rect x="14" y="3" width="7" height="18" rx="1" />
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
         </svg>
       </button>
+
+      <button id="btn-open-transcripts" class="ab-icon-btn" title="Mở transcript đã lưu">
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.29 22.75H5.71001C2.31001 22.75 2.13001 20.88 1.98001 19.37L1.58001 14.36C1.49001 13.39 1.77001 12.42 2.39001 11.64C3.13001 10.74 4.18001 10.25 5.31001 10.25H18.69C19.8 10.25 20.85 10.74 21.56 11.59L21.73 11.82C22.27 12.56 22.51 13.46 22.42 14.37L22.02 19.36C21.87 20.88 21.69 22.75 18.29 22.75ZM5.31001 11.75C4.64001 11.75 4.00001 12.05 3.58001 12.57L3.51001 12.64C3.19001 13.05 3.02001 13.63 3.08001 14.23L3.48001 19.24C3.62001 20.7 3.68001 21.25 5.71001 21.25H18.29C20.33 21.25 20.38 20.7 20.52 19.23L20.92 14.22C20.98 13.63 20.81 13.04 20.42 12.58L20.32 12.46C19.87 11.99 19.3 11.75 18.68 11.75H5.31001Z" fill="currentColor"/>
+<path d="M20.5 12.2203C20.09 12.2203 19.75 11.8803 19.75 11.4703V9.68027C19.75 6.70027 19.23 6.18027 16.25 6.18027H13.7C12.57 6.18027 12.18 5.78027 11.75 5.21027L10.46 3.50027C10.02 2.92027 9.92 2.78027 9.02 2.78027H7.75C4.77 2.78027 4.25 3.30027 4.25 6.28027V11.4303C4.25 11.8403 3.91 12.1803 3.5 12.1803C3.09 12.1803 2.75 11.8403 2.75 11.4303V6.28027C2.75 2.45027 3.92 1.28027 7.75 1.28027H9.03C10.57 1.28027 11.05 1.78027 11.67 2.60027L12.95 4.30027C13.22 4.66027 13.24 4.68027 13.71 4.68027H16.26C20.09 4.68027 21.26 5.85027 21.26 9.68027V11.4703C21.25 11.8803 20.91 12.2203 20.5 12.2203Z" fill="currentColor"/>
+<path d="M14.57 17.75H9.42999C9.01999 17.75 8.67999 17.41 8.67999 17C8.67999 16.59 9.01999 16.25 9.42999 16.25H14.57C14.98 16.25 15.32 16.59 15.32 17C15.32 17.41 14.99 17.75 14.57 17.75Z" fill="currentColor"/>
+</svg>
+
+      </button>
+
+      <button id="btn-view-mode" class="ab-icon-btn" title="Song ngữ / Đơn ngữ">
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.79 19.4203C14.68 19.4203 14.56 19.3904 14.46 19.3404C14.09 19.1504 13.94 18.7004 14.12 18.3304L16.26 14.0604C16.39 13.8104 16.65 13.6504 16.93 13.6504C17.21 13.6504 17.47 13.8104 17.6 14.0704L19.74 18.3404C19.93 18.7104 19.78 19.1603 19.4 19.3503C19.03 19.5403 18.58 19.3904 18.39 19.0104L16.93 16.0804L15.47 19.0104C15.33 19.2704 15.06 19.4203 14.79 19.4203Z" fill="currentColor"/>
+<path d="M18.6801 18.6602H15.1602C14.7502 18.6602 14.4102 18.3202 14.4102 17.9102C14.4102 17.5002 14.7502 17.1602 15.1602 17.1602H18.6801C19.0901 17.1602 19.4301 17.5002 19.4301 17.9102C19.4301 18.3202 19.1001 18.6602 18.6801 18.6602Z" fill="currentColor"/>
+<path d="M16.9198 22.7498C13.7098 22.7498 11.0898 20.1398 11.0898 16.9198C11.0898 13.6998 13.6998 11.0898 16.9198 11.0898C20.1298 11.0898 22.7498 13.6998 22.7498 16.9198C22.7498 20.1398 20.1398 22.7498 16.9198 22.7498ZM16.9198 12.5998C14.5298 12.5998 12.5898 14.5398 12.5898 16.9298C12.5898 19.3198 14.5298 21.2598 16.9198 21.2598C19.2998 21.2598 21.2498 19.3198 21.2498 16.9298C21.2498 14.5398 19.3098 12.5998 16.9198 12.5998Z" fill="currentColor"/>
+<path d="M4.86 12.7003C3.75 12.7003 2.87 12.3902 2.25 11.7902C1.59 11.1502 1.25 10.1802 1.25 8.93024V5.01025C1.25 2.58025 2.59 1.24023 5.02 1.24023H8.94C10.19 1.24023 11.15 1.57023 11.8 2.24023C12.43 2.89023 12.74 3.83027 12.71 5.03027V8.93024C12.74 10.1502 12.43 11.1103 11.78 11.7603C11.13 12.4103 10.17 12.7102 8.92999 12.6902H5.03C4.96 12.7002 4.91 12.7003 4.86 12.7003ZM5.02 2.75024C3.41 2.75024 2.75 3.41026 2.75 5.02026V8.94025C2.75 9.77025 2.92999 10.3702 3.28999 10.7202C3.63999 11.0602 4.20001 11.2103 4.99001 11.2003H8.92999C9.76999 11.2203 10.35 11.0503 10.7 10.7003C11.05 10.3503 11.21 9.76026 11.19 8.95026V5.01025C11.21 4.21025 11.05 3.64022 10.71 3.29022C10.36 2.93022 9.75999 2.75024 8.92999 2.75024H5.02Z" fill="currentColor"/>
+<path d="M8.99994 6.59961H4.93994C4.52994 6.59961 4.18994 6.25961 4.18994 5.84961C4.18994 5.43961 4.52994 5.09961 4.93994 5.09961H8.99994C9.40994 5.09961 9.74994 5.43961 9.74994 5.84961C9.74994 6.25961 9.41994 6.59961 8.99994 6.59961Z" fill="currentColor"/>
+<path d="M6.97998 6.59991C6.56998 6.59991 6.22998 6.25991 6.22998 5.84991V5.16992C6.22998 4.75992 6.56998 4.41992 6.97998 4.41992C7.38998 4.41992 7.72998 4.75992 7.72998 5.16992V5.84991C7.72998 6.25991 7.38998 6.59991 6.97998 6.59991Z" fill="currentColor"/>
+<path d="M4.93994 9.75983C4.52994 9.75983 4.18994 9.41983 4.18994 9.00983C4.18994 8.59983 4.52994 8.25983 4.93994 8.25983C6.20994 8.25983 7.23994 7.17984 7.23994 5.83984C7.23994 5.42984 7.57994 5.08984 7.98994 5.08984C8.39994 5.08984 8.73994 5.42984 8.73994 5.83984C8.73994 7.99984 7.03994 9.75983 4.93994 9.75983Z" fill="currentColor"/>
+<path d="M9.00993 9.76007C8.07993 9.76007 7.18994 9.29008 6.55994 8.46008C6.30994 8.13008 6.37995 7.66003 6.70995 7.41003C7.03995 7.16003 7.50993 7.23005 7.75993 7.56005C8.09993 8.02005 8.54993 8.27008 9.00993 8.27008C9.41993 8.27008 9.75993 8.61008 9.75993 9.02008C9.75993 9.43008 9.41993 9.76007 9.00993 9.76007Z" fill="currentColor"/>
+<path d="M9 22.75C4.73 22.75 1.25 19.27 1.25 15C1.25 14.59 1.59 14.25 2 14.25C2.41 14.25 2.75 14.59 2.75 15C2.75 17.96 4.81 20.44 7.58 21.09L7.31 20.64C7.1 20.28 7.21001 19.82 7.57001 19.61C7.92001 19.4 8.39001 19.51 8.60001 19.87L9.64999 21.62C9.78999 21.85 9.79 22.14 9.66 22.37C9.52 22.6 9.27 22.75 9 22.75Z" fill="currentColor"/>
+<path d="M21.9999 9.75C21.5899 9.75 21.2499 9.41 21.2499 9C21.2499 6.04 19.1899 3.55997 16.4199 2.90997L16.6899 3.35999C16.8999 3.71999 16.7899 4.18001 16.4299 4.39001C16.0799 4.60001 15.6099 4.49001 15.3999 4.13L14.3499 2.38C14.2099 2.15 14.2099 1.86 14.3399 1.63C14.4699 1.39 14.7199 1.25 14.9899 1.25C19.2599 1.25 22.7399 4.73 22.7399 9C22.7499 9.41 22.4099 9.75 21.9999 9.75Z" fill="currentColor"/>
+</svg>
+
+
+      </button>
+
+      <button id="btn-format" class="ab-icon-btn" title="Định dạng">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 7 4 4 20 4 20 7"></polyline>
+          <line x1="9" y1="20" x2="15" y2="20"></line>
+          <line x1="12" y1="4" x2="12" y2="20"></line>
+        </svg>
+      </button>
+
+      <div class="ab-divider"></div>
+
+      <button id="btn-settings" class="ab-icon-btn" title="Cài đặt">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+        <span id="settings-badge" class="settings-badge" style="display:none"></span>
+      </button>
+    </div>
+
+    <!-- Floating display controls (bottom right) -->
+    <div class="floating-controls">
+      <div class="font-controls">
+        <button id="btn-font-down" class="float-btn" title="Giảm cỡ chữ">A−</button>
+        <span id="font-size-display" class="font-size-label">16</span>
+        <button id="btn-font-up" class="float-btn" title="Tăng cỡ chữ">A+</button>
+      </div>
+      <div class="color-controls">
+        <button class="color-dot active" data-color="#ffffff" title="Trắng" style="background:#ffffff;"></button>
+        <button class="color-dot" data-color="#ffd700" title="Vàng" style="background:#ffd700;"></button>
+        <button class="color-dot" data-color="#00e5ff" title="Cyan" style="background:#00e5ff;"></button>
+      </div>
     </div>
 
     <!-- Resize Handle -->
     <div id="resize-handle"></div>
   </div>
 
-  <!-- ═══════════════════ SETTINGS VIEW ═══════════════════ -->
+  <!-- =================== SETTINGS VIEW =================== -->
   <div id="settings-view" class="view">
     <div id="settings-drag" data-tauri-drag-region>
       <div class="settings-header">
@@ -216,7 +275,8 @@
             <input type="password" id="input-api-key" placeholder="Enter your Soniox API key..." autocomplete="off" />
             <button id="btn-toggle-key" class="icon-btn small" title="Show/Hide">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
             </button>
           </div>
@@ -413,12 +473,14 @@
               </select>
             </div>
           </div>
-          <p class="hint" id="hint-twoway" style="display:none;">Speech in Language A → translated to B, and vice versa. Other languages are transcribed but not translated.</p>
+          <p class="hint" id="hint-twoway" style="display:none;">Speech in Language A → translated to B, and vice versa.
+            Other languages are transcribed but not translated.</p>
 
           <!-- Strict Language Detection -->
           <label class="checkbox-option" id="section-strict-lang" style="margin-top: 8px;">
             <input type="checkbox" id="check-strict-lang" />
-            <span class="checkbox-label">Strict language detection <span class="hint-dim">(reduce false language matches)</span></span>
+            <span class="checkbox-label">Strict language detection <span class="hint-dim">(reduce false language
+                matches)</span></span>
           </label>
 
           <!-- Endpoint Delay -->
@@ -432,15 +494,19 @@
         <div class="settings-section">
           <span class="field-label">Audio Source</span>
           <div class="radio-group" id="audio-source-group">
-            <label class="radio-option"><input type="radio" name="audio-source" value="system" checked /><span class="radio-label">System</span></label>
-            <label class="radio-option"><input type="radio" name="audio-source" value="microphone" /><span class="radio-label">Mic</span></label>
-            <label class="radio-option"><input type="radio" name="audio-source" value="both" /><span class="radio-label">Both</span></label>
+            <label class="radio-option"><input type="radio" name="audio-source" value="system" checked /><span
+                class="radio-label">System</span></label>
+            <label class="radio-option"><input type="radio" name="audio-source" value="microphone" /><span
+                class="radio-label">Mic</span></label>
+            <label class="radio-option"><input type="radio" name="audio-source" value="both" /><span
+                class="radio-label">Both</span></label>
           </div>
         </div>
 
         <div class="settings-section" id="section-soniox-context">
           <span class="field-label">Context <span class="optional-badge">Optional</span></span>
-          <p class="hint" style="margin-bottom: 8px;">Provide context to improve transcription and translation accuracy.</p>
+          <p class="hint" style="margin-bottom: 8px;">Provide context to improve transcription and translation accuracy.
+          </p>
 
           <!-- General context (key-value pairs) -->
           <div class="context-subsection">
@@ -453,20 +519,24 @@
 
           <!-- Transcription terms -->
           <div class="context-subsection">
-            <span class="hint">Transcription terms <span class="hint-dim">(one per line — domain-specific words)</span></span>
-            <textarea id="input-context-terms" rows="2" placeholder="e.g.&#10;angioplasty&#10;echocardiogram"></textarea>
+            <span class="hint">Transcription terms <span class="hint-dim">(one per line — domain-specific
+                words)</span></span>
+            <textarea id="input-context-terms" rows="2"
+              placeholder="e.g.&#10;angioplasty&#10;echocardiogram"></textarea>
           </div>
 
           <!-- Background text -->
           <div class="context-subsection">
             <span class="hint">Background text <span class="hint-dim">(meeting notes, prior context)</span></span>
-            <textarea id="input-context-text" rows="2" placeholder="e.g. This is a follow-up meeting about Q3 results..."></textarea>
+            <textarea id="input-context-text" rows="2"
+              placeholder="e.g. This is a follow-up meeting about Q3 results..."></textarea>
           </div>
 
           <!-- Translation terms -->
           <div class="context-subsection">
             <div class="terms-header">
-              <span class="hint" style="margin:0;">Translation terms <span class="hint-dim">(source → target)</span></span>
+              <span class="hint" style="margin:0;">Translation terms <span class="hint-dim">(source →
+                  target)</span></span>
               <button type="button" id="btn-add-term" class="btn-icon-sm" title="Add term">+</button>
             </div>
             <div id="translation-terms-list"></div>
@@ -539,7 +609,8 @@
             <input type="password" id="input-google-tts-key" placeholder="AIzaSy..." autocomplete="off" />
             <button id="btn-toggle-google-key" class="icon-btn small" title="Show/Hide">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
             </button>
           </div>
@@ -589,7 +660,8 @@
             <input type="password" id="input-elevenlabs-key" placeholder="Enter key..." autocomplete="off" />
             <button id="btn-toggle-elevenlabs-key" class="icon-btn small" title="Show/Hide">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
             </button>
           </div>
@@ -610,46 +682,12 @@
       <div class="settings-tab-content" id="tab-about">
         <div class="settings-section about-info">
           <div class="about-app-header">
-            <span class="about-app-name">My Translator</span>
+            <span class="about-app-name">Cabin Translator</span>
             <span class="about-app-version" id="about-version">v0.5.0</span>
           </div>
           <p class="hint">Real-time speech translator for macOS & Windows</p>
         </div>
 
-        <div class="settings-section" id="section-update">
-          <span class="field-label">Updates</span>
-          <div id="update-status" class="update-status">
-            <span id="update-status-text">Click to check for updates</span>
-            <button id="btn-check-update" class="check-update-btn" title="Check now">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 4 23 10 17 10"/>
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-              </svg>
-            </button>
-          </div>
-          <div id="update-actions" style="margin-top:8px;display:none;">
-            <button id="btn-do-update" class="primary-btn update-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              <span id="update-btn-text">Download & Install</span>
-            </button>
-          </div>
-          <div id="update-progress" class="update-progress" style="display:none;">
-            <div class="progress-bar"><div id="update-progress-fill" class="progress-fill"></div></div>
-            <span id="update-progress-pct" class="progress-pct">0%</span>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <span class="field-label">Links</span>
-          <div class="about-links">
-            <a href="#" id="link-github">GitHub Repository</a>
-            <a href="#" id="link-issues">Report a Bug</a>
-          </div>
-        </div>
       </div>
 
       <!-- Save -->
@@ -676,7 +714,8 @@
       </div>
 
       <div class="modal-body">
-        <p class="modal-desc">Downloading and installing MLX models for offline translation. This is a one-time setup.</p>
+        <p class="modal-desc">Downloading and installing MLX models for offline translation. This is a one-time setup.
+        </p>
 
         <!-- Progress bar -->
         <div class="progress-container">
@@ -723,7 +762,6 @@
   <script type="module" src="/js/soniox.js"></script>
   <script type="module" src="/js/elevenlabs-tts.js"></script>
   <script type="module" src="/js/google-tts.js"></script>
-  <script type="module" src="/js/updater.js"></script>
   <script type="module" src="/js/audio-player.js"></script>
   <script type="module" src="/js/app.js"></script>
 </body>
